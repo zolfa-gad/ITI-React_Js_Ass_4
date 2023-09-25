@@ -1,22 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import AppRoutes from "./app-routes";
+import ProductDetailPage from "./pages/detail-page";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="App h-100">
+      <header className="bg-dark text-light d-flex flex-column justify-content-center align-items-center min-vh-100 fs-4">
+        <AppRoutes />
+        {/* <ProductDetailPage /> */}
       </header>
     </div>
   );
