@@ -1,8 +1,10 @@
 import React from "react";
 import { BsSearch } from "react-icons/bs";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const NavigateSection = ({ searchProducts, onChange, searchValue }) => {
+  let favouriteCount = useSelector((state) => state.favourite.list.length);
   return (
     <div className="Nav">
       <nav className="bg-primary bg-opacity-75 d-flex justify-content-center align-items-center p-3 gap-5 shadow-lg">
@@ -31,16 +33,17 @@ const NavigateSection = ({ searchProducts, onChange, searchValue }) => {
         </form>
 
         <Link
-          className="text-dark text-decoration-none bg-light rounded-1 p-2"
+          className="fs-3 text-light text-decoration-none rounded-1 p-2"
           to={"/products-favourite"}
         >
           <span>Favourite</span>
+          <span className="text-warning ps-2">{favouriteCount}</span>
         </Link>
         <Link to={"/not-found"}>
           <img
             id="profile"
             src={require("../../images/anonymous-avatar-icon-25.jpg")}
-            style={{ width: 60 + "px", height: 60 + "px" }}
+            style={{ width: "60px", height: "60px" }}
             className="rounded-circle"
           />
         </Link>

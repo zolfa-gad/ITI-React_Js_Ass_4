@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { InstanceAPI } from "../axios-instanse";
 
 const ProductDetailPage = () => {
+  // ------------------------------ use state ------------------------------//
   let [isLoading, setIsLoading] = useState(true);
-
   let [productItem, setProductItem] = useState({
     title: "",
     images: [],
@@ -12,16 +12,19 @@ const ProductDetailPage = () => {
     description: "",
     price: "",
   });
+
+  // ------------------------------ use params ------------------------------//
   const { productID } = useParams();
 
+  // ------------------------------ use navigate ------------------------------//
   let navigateToPage = useNavigate();
 
+  // ------------------------------ use effect ------------------------------//
   useEffect(() => {
-    // if (productItem !=undefined)
     getProductFromAPI();
-    console.log(productItem, "item");
   }, []);
 
+  // ------------------------------ get product by id ------------------------------//
   function getProductFromAPI() {
     InstanceAPI.get(`/product/${productID}`)
       .then((response) => {
@@ -39,14 +42,10 @@ const ProductDetailPage = () => {
     <h2>Loading...</h2>
   ) : (
     <div className="Detail text-center pb-5 ">
-      <h1 className="page-title p-5">
-        {/* {productItem.title[0].toUpperCase() + productItem.title.slice(1)} */}
-        {productItem.title}
-      </h1>
+      <h1 className="page-title p-5">{productItem.title}</h1>
       <div className="container">
         <div className="w-100  px-2">
           <img
-            // height={"500px"}
             src={productItem.thumbnail}
             className="w-100 rounded-2 border border-1"
           />
@@ -64,7 +63,6 @@ const ProductDetailPage = () => {
               <img
                 key={`img-${index}`}
                 src={image}
-                // style={{ width: 318 + "px", }}
                 className=" rounded-2 border border-2 w-100 h-100 "
               />
             </div>

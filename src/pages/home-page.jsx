@@ -2,43 +2,38 @@ import React, { useEffect, useState } from "react";
 import CardItem from "../components/reusable/card-product-item";
 import NavigateSection from "../components/sections/navigate-section";
 import { InstanceAPI } from "../axios-instanse";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BsFillStarFill } from "react-icons/bs";
-// import { IconName,FaCcPaypal } from "react-icons/fa";
+import { addProduct, removeProduct } from "../reducers/favourite-slice";
 
-const ProductsHomePage = ({ searchProducts }) => {
-  let test = [1, 2, 3, 4, 5, 6, 7];
-
-  let stateFav = useSelector((state) => state.favourite.list);
-  console.log(stateFav,'state');
-  let dipatchAction = useDispatch();
-
+const ProductsHomePage = () => {
+  // ------------------------------ use state ------------------------------//
   let [isLoading, setIsLoading] = useState(true);
-
   let [productsList, setProductsList] = useState([]);
   let [searchInput, setSearchInputValue] = useState("");
 
+  // ------------------------------ use navigate ------------------------------//
   const navigateToPage = useNavigate();
 
+  // ------------------------------ use selector ------------------------------//
+  let favouriteList = useSelector((state) => state.favourite.list);
+
+  // ------------------------------ use dispatch ------------------------------//
+  let dispatchAction = useDispatch();
+
+  // ------------------------------ use effect ------------------------------//
   useEffect(() => {
     getProductsFromAPI();
-    setIsLoading(false);
-
-    console.log(productsList, "products");
-    // console.log(productsList.length);
-    // if (productsList != undefined) {
-    //   console.log(productsList.length);
-    // } else {
-    //   console.log(productsList.length);
-    // }
   }, []);
 
+  // ------------------------------ get products ------------------------------//
   function getProductsFromAPI() {
     InstanceAPI.get("/products")
       .then((response) => {
         console.log(response.data, "response");
         setProductsList(response.data.products);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -46,22 +41,20 @@ const ProductsHomePage = ({ searchProducts }) => {
       });
   }
 
+  // ------------------------------ search handler ------------------------------//
   function onSearchInputChange(event) {
-    console.log(event.target.value);
     setSearchInputValue(event.target.value);
   }
 
+  // ------------------------------ search products ------------------------------//
   function searchProducts(event, self) {
     event.preventDefault();
-    console.log(event.target);
-    console.log(self);
-
+    setIsLoading(true);
     InstanceAPI.get(`/products/search?q=${searchInput}`)
       .then((response) => {
         console.log(response.data, "response");
         setProductsList(response.data.products);
-        // setCheckSearch(true);
-        // console.log(productsList.length);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -69,17 +62,32 @@ const ProductsHomePage = ({ searchProducts }) => {
       });
   }
 
-  function onStarToggle(event) {
-    console.log(event.target);
-    event.target.classList.toggle("text-info");
-    console.log("star");
+  // ------------------------------ on toggle click ------------------------------//
+  function onStarToggle(event, product) {
+    event.target.classList.toggle("text-warning");
+
+    if (event.target.classList.contains("text-warning")) {
+      dispatchAction(addProduct(product));
+    } else {
+      dispatchAction(removeProduct(product));
+    }
+  }
+
+  // ------------------------------ is favourite ------------------------------//
+  function isFavouriteProduct(product) {
+    let result = favouriteList.find(({ id }) => id === product.id);
+    if (result === undefined) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   return (
     <div className=" min-vh-100 min-vw-100 text-center  pb-5">
       <NavigateSection
-        searchProducts={(event) => searchProducts(event)}
-        onChange={(event) => onSearchInputChange(event)}
+        searchProducts={searchProducts}
+        onChange={onSearchInputChange}
         searchValue={searchInput}
       />
 
@@ -87,7 +95,7 @@ const ProductsHomePage = ({ searchProducts }) => {
 
       {isLoading ? (
         <h2 className="text-light h-100">Loading...</h2>
-      ) : productsList.length != 0 ? (
+      ) : productsList.length !== 0 ? (
         <div className="container gap-3 d-flex flex-wrap justify-content-center align-items-center ">
           {productsList.map((product) => (
             <CardItem
@@ -97,10 +105,16 @@ const ProductsHomePage = ({ searchProducts }) => {
               price={product.price}
               category={product.category}
               brand={product.brand}
-              id={product.id}
               toPage={`/product-detail/${product.id}`}
-              onStarToggle={(event) => onStarToggle(event)}
-              icon={<BsFillStarFill size={40} className="text-dark" />}
+              onStarToggle={(event) => onStarToggle(event, product)}
+              icon={
+                <BsFillStarFill
+                  size={40}
+                  className={
+                    isFavouriteProduct(product) ? "text-warning" : "text-dark"
+                  }
+                />
+              }
             />
           ))}
         </div>

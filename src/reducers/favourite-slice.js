@@ -4,17 +4,15 @@ let favouriteSlice = createSlice({
   name: "favourite",
   initialState: { list: [] },
   reducers: {
-    addProduct: (state) => {
-      state.list.push({
-        image: "cvjdvh",
-        price: "jsdhfj",
-      });
+    addProduct: (state, action) => {
+      if (state.list.find(({ id }) => id === action.payload.id) === undefined) {
+        state.list = [...state.list, action.payload];
+      }
     },
-    removeProduct: (state) => {
-      state.list.push({
-        image: "cvjdvh",
-        price: "jsdhfj",
-      });
+
+    removeProduct: (state, action) => {
+      let foundItem = state.list.filter(({ id }) => id !== action.payload.id);
+      state.list = [...foundItem];
     },
   },
 });

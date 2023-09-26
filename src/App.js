@@ -9,7 +9,6 @@ function App() {
         <Provider store={favouriteStore}>
           <AppRoutes />
         </Provider>
-        {/* <ProductDetailPage /> */}
       </header>
     </div>
   );
