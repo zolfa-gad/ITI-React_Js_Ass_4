@@ -3,12 +3,18 @@ import CardItem from "../components/reusable/card-product-item";
 import NavigateSection from "../components/sections/navigate-section";
 import { InstanceAPI } from "../axios-instanse";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { BsFillStarFill } from "react-icons/bs";
 // import { IconName,FaCcPaypal } from "react-icons/fa";
 
 const ProductsHomePage = ({ searchProducts }) => {
   let test = [1, 2, 3, 4, 5, 6, 7];
 
-  let [search, setCheckSearch] = useState(false);
+  let stateFav = useSelector((state) => state.favourite.list);
+  console.log(stateFav,'state');
+  let dipatchAction = useDispatch();
+
+  let [isLoading, setIsLoading] = useState(true);
 
   let [productsList, setProductsList] = useState([]);
   let [searchInput, setSearchInputValue] = useState("");
@@ -17,6 +23,8 @@ const ProductsHomePage = ({ searchProducts }) => {
 
   useEffect(() => {
     getProductsFromAPI();
+    setIsLoading(false);
+
     console.log(productsList, "products");
     // console.log(productsList.length);
     // if (productsList != undefined) {
@@ -25,16 +33,6 @@ const ProductsHomePage = ({ searchProducts }) => {
     //   console.log(productsList.length);
     // }
   }, []);
-
-  useEffect(() => {
-    if (searchInput) {
-      setCheckSearch(true);
-      console.log(search);
-    } else {
-      setCheckSearch(false);
-      console.log(search);
-    }
-  }, [searchInput]);
 
   function getProductsFromAPI() {
     InstanceAPI.get("/products")
@@ -71,6 +69,12 @@ const ProductsHomePage = ({ searchProducts }) => {
       });
   }
 
+  function onStarToggle(event) {
+    console.log(event.target);
+    event.target.classList.toggle("text-info");
+    console.log("star");
+  }
+
   return (
     <div className=" min-vh-100 min-vw-100 text-center  pb-5">
       <NavigateSection
@@ -78,31 +82,30 @@ const ProductsHomePage = ({ searchProducts }) => {
         onChange={(event) => onSearchInputChange(event)}
         searchValue={searchInput}
       />
+
       <h2 className="p-5 fs-1 fw-bolder page-title">Products & Items</h2>
 
-      {productsList ? (
+      {isLoading ? (
+        <h2 className="text-light h-100">Loading...</h2>
+      ) : productsList.length != 0 ? (
         <div className="container gap-3 d-flex flex-wrap justify-content-center align-items-center ">
           {productsList.map((product) => (
-            <Link
+            <CardItem
               key={product.id}
-              to={`/product-detail/${product.id}`}
-              className="text-decoration-none text-dark"
-            >
-              <CardItem
-                key={product.id}
-                source={product.thumbnail}
-                title={product.title}
-                price={product.price}
-                category={product.category}
-                brand={product.brand}
-              />
-            </Link>
+              source={product.thumbnail}
+              title={product.title}
+              price={product.price}
+              category={product.category}
+              brand={product.brand}
+              id={product.id}
+              toPage={`/product-detail/${product.id}`}
+              onStarToggle={(event) => onStarToggle(event)}
+              icon={<BsFillStarFill size={40} className="text-dark" />}
+            />
           ))}
         </div>
-      ) :  search ? (
-        <h2 className="text-light h-100">Products Not Found</h2>
       ) : (
-        <h2 className="text-light h-100">Loading...</h2>
+        <h2 className="text-light h-100">Products Not Found</h2>
       )}
     </div>
   );

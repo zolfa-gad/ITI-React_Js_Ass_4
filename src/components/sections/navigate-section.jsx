@@ -29,6 +29,13 @@ const NavigateSection = ({ searchProducts, onChange, searchValue }) => {
             <BsSearch size={30} />
           </button>
         </form>
+
+        <Link
+          className="text-dark text-decoration-none bg-light rounded-1 p-2"
+          to={"/products-favourite"}
+        >
+          <span>Favourite</span>
+        </Link>
         <Link to={"/not-found"}>
           <img
             id="profile"

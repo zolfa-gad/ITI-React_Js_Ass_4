@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { InstanceAPI } from "../axios-instanse";
 
 const ProductDetailPage = () => {
-  let test = [1, 2, 3];
+  let [isLoading, setIsLoading] = useState(true);
+
   let [productItem, setProductItem] = useState({
     title: "",
     images: [],
@@ -26,6 +27,7 @@ const ProductDetailPage = () => {
       .then((response) => {
         console.log(response.data);
         setProductItem(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -33,7 +35,9 @@ const ProductDetailPage = () => {
       });
   }
 
-  return productItem ? (
+  return isLoading ? (
+    <h2>Loading...</h2>
+  ) : (
     <div className="Detail text-center pb-5 ">
       <h1 className="page-title p-5">
         {/* {productItem.title[0].toUpperCase() + productItem.title.slice(1)} */}
@@ -50,6 +54,7 @@ const ProductDetailPage = () => {
         <div className="d-flex flex-wrap py-2">
           {productItem.images.map((image, index) => (
             <div
+              key={`img-${index}`}
               className={
                 productItem.images.length % 2 == 0
                   ? "p-2 col-lg-3"
@@ -73,8 +78,6 @@ const ProductDetailPage = () => {
         <p className="lead py-3">{productItem.description}</p>
       </div>
     </div>
-  ) : (
-    <span>Loading...</span>
   );
 };
 
