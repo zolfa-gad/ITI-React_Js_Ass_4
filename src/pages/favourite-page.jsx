@@ -3,6 +3,7 @@ import CardItem from "../components/reusable/card-product-item";
 import { useDispatch, useSelector } from "react-redux";
 import { MdDelete } from "react-icons/md";
 import { removeProduct } from "../reducers/favourite-slice";
+import { Link } from "react-router-dom";
 
 const FavouritePage = () => {
   // ------------------------------ use selector ------------------------------//
@@ -18,6 +19,9 @@ const FavouritePage = () => {
 
   return (
     <div className=" min-vh-100 min-vw-100 text-center  pb-5">
+      <Link to={'/'}>
+        <span className="btn btn-outline-light p-2 px-5 m-3" >Back</span>
+      </Link>
       <h2 className="p-5 fs-1 fw-bolder page-title">Favourite Products</h2>
 
       {favouriteList.length != 0 ? (

@@ -84,7 +84,7 @@ const ProductsHomePage = () => {
   }
 
   return (
-    <div className=" min-vh-100 min-vw-100 text-center  pb-5">
+    <div className=" min-vh-100 min-vw-100 text-center pb-5">
       <NavigateSection
         searchProducts={searchProducts}
         onChange={onSearchInputChange}
